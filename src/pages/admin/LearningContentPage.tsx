@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +34,12 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Edit, Trash, Video, FileText, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+interface ExtendedLearningContent extends LearningContent {
+  skill_tracks?: {
+    name: string;
+  };
+}
+
 const LearningContentPage = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -66,7 +71,7 @@ const LearningContentPage = () => {
         throw error;
       }
       
-      return data as (LearningContent & { skill_tracks: { name: string } })[];
+      return data as ExtendedLearningContent[];
     },
   });
 
