@@ -164,8 +164,8 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
 // Analytics and Reports
 export async function getUserStats() {
   // Count total users
-  const { count: userCount, error: userError } = await supabase
-    .from("profiles" as any)
+  const { count: userCount, error: userError } = await (supabase
+    .from("profiles" as any) as any)
     .select("*", { count: 'exact', head: true });
 
   if (userError) {
@@ -176,8 +176,8 @@ export async function getUserStats() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  const { count: activeUserCount, error: activeUserError } = await supabase
-    .from("profiles" as any)
+  const { count: activeUserCount, error: activeUserError } = await (supabase
+    .from("profiles" as any) as any)
     .select("*", { count: 'exact', head: true })
     .gt("last_activity", sevenDaysAgo.toISOString());
 
@@ -186,8 +186,8 @@ export async function getUserStats() {
   }
 
   // Count completed missions
-  const { count: completedMissionsCount, error: missionsError } = await supabase
-    .from("user_progress" as any)
+  const { count: completedMissionsCount, error: missionsError } = await (supabase
+    .from("user_progress" as any) as any)
     .select("*", { count: 'exact', head: true })
     .eq("status", "completed");
 
@@ -204,8 +204,8 @@ export async function getUserStats() {
 
 export async function getMissionCompletionStats() {
   // Get a list of all missions with completion counts
-  const { data, error } = await supabase
-    .from("missions" as any)
+  const { data, error } = await (supabase
+    .from("missions" as any) as any)
     .select("id, name, xp_reward, user_progress(status)");
 
   if (error) {

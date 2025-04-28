@@ -18,8 +18,8 @@ type SupportedTables =
 
 // Generic helper to make TypeScript happy with our table names
 export const supabaseFrom = <T = any>(table: SupportedTables) => {
-  // Use double assertion to bypass TypeScript's strict checking
-  return supabase.from(table as any) as unknown as ReturnType<typeof supabase.from>;
+  // Triple assertion to bypass TypeScript's strict checking completely
+  return supabase.from(table as any) as any;
 };
 
 // Generic CRUD operations
