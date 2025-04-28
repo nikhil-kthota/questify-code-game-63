@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    --background: 220 33% 98%;
+    --background: 230 41% 96%;
     --foreground: 240 10% 4%;
 
     --card: 0 0% 100%;
@@ -16,24 +16,24 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 4%;
 
-    --primary: 221 83% 53%;
+    --primary: 252 77% 63%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 252 40% 92%;
+    --secondary-foreground: 252 40% 30%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 240 4% 46%;
 
-    --accent: 261 73% 65%;
-    --accent-foreground: 240 6% 10%;
+    --accent: 334 80% 55%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 221 83% 53%;
+    --ring: 252 77% 63%;
 
     --radius: 0.75rem;
 
@@ -48,42 +48,42 @@
   }
 
   .dark {
-    --background: 240 10% 4%;
+    --background: 240 22% 13%;
     --foreground: 0 0% 98%;
 
-    --card: 240 10% 6%;
+    --card: 240 20% 16%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 10% 6%;
+    --popover: 240 20% 16%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 221 83% 53%;
+    --primary: 252 77% 63%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 240 4% 16%;
+    --secondary: 252 20% 26%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 4% 16%;
+    --muted: 240 20% 26%;
     --muted-foreground: 240 5% 65%;
 
-    --accent: 261 73% 65%;
+    --accent: 334 80% 55%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 221 83% 53%;
+    --border: 240 20% 26%;
+    --input: 240 20% 26%;
+    --ring: 252 77% 63%;
 
-    --sidebar-background: 240 6% 10%;
+    --sidebar-background: 240 22% 10%;
     --sidebar-foreground: 240 5% 96%;
-    --sidebar-primary: 224 76% 48%;
+    --sidebar-primary: 252 77% 63%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent: 240 20% 26%;
     --sidebar-accent-foreground: 240 5% 96%;
-    --sidebar-border: 240 4% 16%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-border: 240 20% 20%;
+    --sidebar-ring: 252 77% 63%;
   }
 }
 
@@ -103,36 +103,36 @@
 }
 
 @layer components {
+  .game-panel {
+    @apply bg-mountain-dark/90 backdrop-blur-md border border-mountain-purple/30 rounded-xl shadow-lg shadow-mountain-purple/10;
+  }
+  
   .neon-glow {
-    --glow-color: rgba(59, 130, 246, 0.7);
+    --glow-color: rgba(132, 94, 247, 0.7); /* mountain-purple */
     @apply animate-pulse-glow;
   }
 
   .neon-glow-red {
-    --glow-color: rgba(239, 68, 68, 0.7);
+    --glow-color: rgba(230, 73, 128, 0.7); /* sunset-red */
     @apply animate-pulse-glow;
   }
 
-  .neon-glow-purple {
-    --glow-color: rgba(168, 85, 247, 0.7);
+  .neon-glow-blue {
+    --glow-color: rgba(77, 171, 247, 0.7); /* neon-blue */
     @apply animate-pulse-glow;
   }
 
   .neon-glow-green {
-    --glow-color: rgba(34, 197, 94, 0.7);
+    --glow-color: rgba(81, 207, 102, 0.7); /* neon-green */
     @apply animate-pulse-glow;
   }
 
   .card-gradient {
-    @apply bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm;
+    @apply bg-gradient-to-br from-mountain-purple/20 to-sunset-red/20 backdrop-blur-sm;
   }
   
   .glass-card {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-xl;
-  }
-
-  .dark .glass-card {
-    @apply bg-black/30 border-white/10;
+    @apply bg-mountain-dark/70 backdrop-blur-lg border border-mountain-purple/30 rounded-xl shadow-lg;
   }
 
   .questify-button {
@@ -140,7 +140,7 @@
   }
 
   .questify-button-primary {
-    @apply questify-button bg-neon-blue text-white shadow-md hover:shadow-lg hover:shadow-blue-500/30;
+    @apply questify-button bg-mountain-purple text-white shadow-md hover:shadow-lg hover:shadow-mountain-purple/30;
   }
 
   .questify-button-secondary {
@@ -148,11 +148,11 @@
   }
 
   .questify-button-danger {
-    @apply questify-button bg-neon-red text-white shadow-md hover:shadow-lg hover:shadow-red-500/30;
+    @apply questify-button bg-sunset-red text-white shadow-md hover:shadow-lg hover:shadow-sunset-red/30;
   }
 
   .progress-bar {
-    @apply h-2 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden;
+    @apply h-2 rounded-full bg-mountain-darkest overflow-hidden;
   }
 
   .progress-bar-fill {
@@ -160,11 +160,11 @@
   }
 
   .skill-node {
-    @apply rounded-full bg-gray-300 dark:bg-gray-700 border-4 border-gray-400 dark:border-gray-600 flex items-center justify-center transition-all duration-300;
+    @apply rounded-full bg-mountain-dark border-4 flex items-center justify-center transition-all duration-300;
   }
 
   .skill-node-unlocked {
-    @apply bg-primary border-primary/50 shadow-md shadow-primary/30 text-white;
+    @apply bg-mountain-purple border-mountain-purple/50 shadow-md shadow-mountain-purple/30 text-white;
   }
 
   .skill-node-completed {
@@ -172,25 +172,42 @@
   }
 
   .skill-node-locked {
-    @apply bg-gray-300 dark:bg-gray-700 border-gray-400 dark:border-gray-600 text-gray-500;
+    @apply bg-mountain-darkest/80 border-gray-600/30 text-gray-500;
   }
 
   .skill-edge {
-    @apply h-1 bg-gray-300 dark:bg-gray-700 rounded-full transition-colors duration-300;
+    @apply h-1 bg-mountain-darkest/80 rounded-full transition-colors duration-300;
   }
 
   .skill-edge-unlocked {
-    @apply bg-primary;
+    @apply bg-mountain-purple;
+  }
+  
+  .timeline-node {
+    @apply relative flex items-center;
+  }
+  
+  .timeline-node-content {
+    @apply ml-4;
+  }
+  
+  .timeline-line {
+    @apply absolute top-0 left-4 w-0.5 h-full bg-mountain-purple/30 -z-10;
+  }
+  
+  .floating-element {
+    @apply animate-float;
   }
 }
 
-.dark {
-  --background-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"), linear-gradient(to bottom, hsl(240, 10%, 4%), hsl(240, 8%, 12%));
-  background-attachment: fixed;
-}
-
 :root {
-  --background-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"), linear-gradient(to bottom, hsl(220, 33%, 94%), hsl(220, 30%, 88%));
+  --background-pattern: linear-gradient(to bottom, rgba(52, 58, 98, 0.9), rgba(35, 36, 68, 0.95)), url('/lovable-uploads/ced9b691-a6d9-48b3-9d9f-a2076f764f86.png');
   background-attachment: fixed;
+  background-size: cover;
 }
 
+.dark {
+  --background-pattern: linear-gradient(to bottom, rgba(35, 36, 68, 0.8), rgba(25, 26, 48, 0.95)), url('/lovable-uploads/ced9b691-a6d9-48b3-9d9f-a2076f764f86.png');
+  background-attachment: fixed;
+  background-size: cover;
+}

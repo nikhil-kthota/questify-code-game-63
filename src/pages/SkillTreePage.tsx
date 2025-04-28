@@ -1,9 +1,9 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Code, Star, FileText, BarChart } from "lucide-react";
-import SkillTreeNode from "@/components/SkillTreeNode";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { BookOpen, Sparkles, Star, ScrollText, Trophy } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // Type definitions for our skill tree
 type SkillNodeStatus = "locked" | "unlocked" | "completed";
@@ -14,7 +14,7 @@ type SkillNode = {
   status: SkillNodeStatus;
   description: string;
   icon: JSX.Element;
-  position: { x: number; y: number };
+  level: number;
   connections: string[];
 };
 
@@ -24,53 +24,53 @@ const SkillTreePage = () => {
   const [skills] = useState<SkillNode[]>([
     {
       id: "js-basics",
-      name: "JS Basics",
+      name: "Arcane Fundamentals",
       status: "completed",
-      description: "Learn the fundamentals of JavaScript programming",
-      icon: <Code className="h-6 w-6" />,
-      position: { x: 50, y: 80 },
+      description: "Master the basic elements of magical scripts",
+      icon: <BookOpen className="h-6 w-6" />,
+      level: 1,
       connections: ["js-functions"]
     },
     {
       id: "js-functions",
-      name: "Functions",
+      name: "Spell Binding",
       status: "unlocked",
-      description: "Master JavaScript functions and scope",
-      icon: <FileText className="h-6 w-6" />,
-      position: { x: 50, y: 40 },
+      description: "Create powerful incantations and control their scope",
+      icon: <ScrollText className="h-6 w-6" />,
+      level: 2,
       connections: ["js-arrays", "js-objects"]
     },
     {
       id: "js-arrays",
-      name: "Arrays",
+      name: "Magical Collections",
       status: "locked",
-      description: "Working with JavaScript arrays and array methods",
-      icon: <BarChart className="h-6 w-6" />,
-      position: { x: 20, y: 20 },
+      description: "Harness the power of organizing magical elements",
+      icon: <Star className="h-6 w-6" />,
+      level: 3,
       connections: ["js-advanced"]
     },
     {
       id: "js-objects",
-      name: "Objects",
+      name: "Arcane Structures",
       status: "locked",
-      description: "Understanding JavaScript objects and prototypes",
-      icon: <Star className="h-6 w-6" />,
-      position: { x: 80, y: 20 },
+      description: "Build complex magical constructs and hierarchies",
+      icon: <Sparkles className="h-6 w-6" />,
+      level: 3,
       connections: ["js-advanced"]
     },
     {
       id: "js-advanced",
-      name: "Advanced JS",
+      name: "Advanced Wizardry",
       status: "locked",
-      description: "Advanced JavaScript concepts and patterns",
-      icon: <Code className="h-6 w-6" />,
-      position: { x: 50, y: 0 },
+      description: "Master the highest forms of magical programming",
+      icon: <Trophy className="h-6 w-6" />,
+      level: 4,
       connections: []
     }
   ]);
 
   const [selectedSkill, setSelectedSkill] = useState<SkillNode | null>(null);
-
+  
   const handleNodeClick = (skill: SkillNode) => {
     setSelectedSkill(skill);
   };
@@ -81,118 +81,123 @@ const SkillTreePage = () => {
     }
   };
 
+  // Group skills by level
+  const skillsByLevel = skills.reduce((acc, skill) => {
+    if (!acc[skill.level]) {
+      acc[skill.level] = [];
+    }
+    acc[skill.level].push(skill);
+    return acc;
+  }, {} as Record<number, SkillNode[]>);
+
+  // Get sorted levels
+  const levels = Object.keys(skillsByLevel).map(Number).sort((a, b) => a - b);
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl md:text-4xl font-vt323 mb-2">Skill Tree</h1>
-        <p className="text-muted-foreground">Unlock new skills and progress through your learning journey</p>
+    <div className="space-y-8 pb-16 md:pb-0">
+      <div className="glass-card p-6 text-center">
+        <h1 className="text-3xl md:text-5xl font-vt323 mb-2">Spell Paths</h1>
+        <p className="text-lg">Master magical skills and progress through your arcane journey</p>
       </div>
 
-      <div className="relative bg-muted/30 rounded-xl min-h-[400px] p-6 border">
-        {/* Render connections between nodes */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-          {skills.map(skill => (
-            skill.connections.map(targetId => {
-              const target = skills.find(s => s.id === targetId);
-              if (!target) return null;
+      {/* Timeline-based Skill Tree */}
+      <div className="glass-card p-8 relative">
+        <div className="space-y-16">
+          {levels.map((level) => (
+            <div key={level} className="relative">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="h-12 w-12 rounded-full bg-mountain-purple text-white flex items-center justify-center font-vt323 text-xl neon-glow">
+                  {level}
+                </div>
+                <h2 className="text-2xl font-vt323 text-sunset-pink">Level {level} Spells</h2>
+              </div>
               
-              const startX = skill.position.x;
-              const startY = skill.position.y;
-              const endX = target.position.x;
-              const endY = target.position.y;
-              
-              const isUnlocked = skill.status === 'completed' || skill.status === 'unlocked';
-              
-              return (
-                <line
-                  key={`${skill.id}-${target.id}`}
-                  x1={`${startX}%`}
-                  y1={`${startY}%`}
-                  x2={`${endX}%`}
-                  y2={`${endY}%`}
-                  className={`stroke-2 ${isUnlocked ? 'stroke-primary' : 'stroke-gray-300 dark:stroke-gray-700'}`}
-                  strokeDasharray={!isUnlocked ? "5,5" : ""}
-                />
-              );
-            })
-          ))}
-        </svg>
-        
-        {/* Render skill nodes */}
-        <div className="relative w-full h-full z-10">
-          {skills.map(skill => (
-            <div 
-              key={skill.id}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2"
-              style={{ 
-                left: `${skill.position.x}%`, 
-                top: `${skill.position.y}%` 
-              }}
-            >
-              <SkillTreeNode
-                id={skill.id}
-                name={skill.name}
-                status={skill.status}
-                icon={skill.icon}
-                onClick={() => handleNodeClick(skill)}
-              />
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 relative">
+                {level > 1 && (
+                  <div className="absolute top-0 left-6 w-0.5 h-8 -mt-8 bg-mountain-purple/30"></div>
+                )}
+                {skillsByLevel[level].map((skill) => (
+                  <Card 
+                    key={skill.id} 
+                    className={`relative transition-all hover:scale-105 cursor-pointer 
+                      ${skill.status === 'completed' ? 'border-2 border-mountain-purple neon-glow' : 
+                      skill.status === 'unlocked' ? 'border border-sunset-pink' : 
+                      'border border-white/10 opacity-80'}
+                    `}
+                    onClick={() => handleNodeClick(skill)}
+                  >
+                    <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                      <div className={`p-3 rounded-lg ${
+                        skill.status === 'completed' ? 'bg-mountain-purple text-white' :
+                        skill.status === 'unlocked' ? 'bg-sunset-pink text-white' : 
+                        'bg-mountain-darkest text-white/50'
+                      }`}>
+                        {skill.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-vt323">{skill.name}</h3>
+                        <p className={`text-sm ${
+                          skill.status === 'locked' ? 'text-white/50' : ''
+                        }`}>
+                          {skill.status === 'completed' ? '✨ Mastered' :
+                           skill.status === 'unlocked' ? '🔮 Ready to learn' : '🔒 Locked'}
+                        </p>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-white/80">{skill.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
+          ))}
+          
+          {/* Vertical timeline lines connecting levels */}
+          {levels.slice(0, -1).map((level, index) => (
+            <div 
+              key={`line-${level}`}
+              className="absolute left-6 w-0.5 bg-mountain-purple/30"
+              style={{ 
+                top: `${16 * (index + 1) + 4}rem`, 
+                height: '2rem'
+              }}
+            ></div>
           ))}
         </div>
       </div>
 
-      {/* Skills list view */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-        {skills.map(skill => (
-          <Card 
-            key={skill.id}
-            className={`transition-all hover:scale-105 cursor-pointer ${
-              skill.status === 'completed' ? 'border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : ''
-            }`}
-            onClick={() => handleNodeClick(skill)}
-          >
-            <CardHeader className="flex flex-row items-center gap-4 pb-2">
-              <div className={`p-2 rounded-lg ${
-                skill.status === 'completed' ? 'bg-blue-500' :
-                skill.status === 'unlocked' ? 'bg-primary' : 'bg-gray-300'
-              }`}>
-                {skill.icon}
-              </div>
-              <div>
-                <h3 className="text-lg font-vt323">{skill.name}</h3>
-                <p className={`text-sm ${
-                  skill.status === 'locked' ? 'text-muted-foreground' : ''
-                }`}>
-                  {skill.status === 'completed' ? '✓ Completed' :
-                   skill.status === 'unlocked' ? '🔓 Available' : '🔒 Locked'}
-                </p>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">{skill.description}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
       {/* Selected skill details panel */}
       {selectedSkill && (
-        <Card className="p-6 mt-4">
-          <h3 className="text-xl font-vt323 mb-2">{selectedSkill.name}</h3>
-          <p className="text-muted-foreground mb-4">{selectedSkill.description}</p>
+        <Card className="game-panel p-6 mt-4">
+          <div className="flex items-center gap-4 mb-4">
+            <div className={`p-3 rounded-lg ${
+              selectedSkill.status === 'completed' ? 'bg-mountain-purple text-white' :
+              selectedSkill.status === 'unlocked' ? 'bg-sunset-pink text-white' : 
+              'bg-mountain-darkest text-white/50'
+            }`}>
+              {selectedSkill.icon}
+            </div>
+            <div>
+              <h3 className="text-xl font-vt323">{selectedSkill.name}</h3>
+              <p className="text-sm text-white/70">Level {selectedSkill.level} Spell</p>
+            </div>
+          </div>
+          
+          <p className="text-white/80 mb-4">{selectedSkill.description}</p>
           
           {selectedSkill.status === "locked" ? (
-            <p className="text-sm text-muted-foreground italic">
-              Complete previous skills to unlock this one
+            <p className="text-sm text-white/50 italic">
+              Complete previous spells to unlock this powerful magic
             </p>
           ) : (
             <div className="flex justify-end">
-              <button 
+              <Button 
                 onClick={handleStartMission}
-                className="questify-button-primary"
+                className="bg-sunset-pink hover:bg-sunset-red text-white"
               >
-                {selectedSkill.status === "completed" ? "Review" : "Start"}
-              </button>
+                {selectedSkill.status === "completed" ? "Review Spell" : "Learn Spell"}
+              </Button>
             </div>
           )}
         </Card>
