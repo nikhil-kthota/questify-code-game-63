@@ -163,9 +163,11 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
 
 // Analytics and Reports
 export async function getUserStats() {
+  // Create a helper function for direct supabase calls
+  const directQuery = (table: string) => (supabase.from(table as never) as any);
+  
   // Count total users
-  const { count: userCount, error: userError } = await (supabase
-    .from("profiles" as any) as any)
+  const { count: userCount, error: userError } = await directQuery('profiles')
     .select("*", { count: 'exact', head: true });
 
   if (userError) {
@@ -176,8 +178,7 @@ export async function getUserStats() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  const { count: activeUserCount, error: activeUserError } = await (supabase
-    .from("profiles" as any) as any)
+  const { count: activeUserCount, error: activeUserError } = await directQuery('profiles')
     .select("*", { count: 'exact', head: true })
     .gt("last_activity", sevenDaysAgo.toISOString());
 
@@ -186,8 +187,7 @@ export async function getUserStats() {
   }
 
   // Count completed missions
-  const { count: completedMissionsCount, error: missionsError } = await (supabase
-    .from("user_progress" as any) as any)
+  const { count: completedMissionsCount, error: missionsError } = await directQuery('user_progress')
     .select("*", { count: 'exact', head: true })
     .eq("status", "completed");
 
@@ -203,9 +203,11 @@ export async function getUserStats() {
 }
 
 export async function getMissionCompletionStats() {
+  // Using our helper function for direct query
+  const directQuery = (table: string) => (supabase.from(table as never) as any);
+  
   // Get a list of all missions with completion counts
-  const { data, error } = await (supabase
-    .from("missions" as any) as any)
+  const { data, error } = await directQuery('missions')
     .select("id, name, xp_reward, user_progress(status)");
 
   if (error) {
