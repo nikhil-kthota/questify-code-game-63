@@ -74,6 +74,7 @@ export default {
       },
       fontFamily: {
         'vt323': ['VT323', 'monospace'],
+        'press-start': ['"Press Start 2P"', 'cursive']
       },
       keyframes: {
         "accordion-down": {
