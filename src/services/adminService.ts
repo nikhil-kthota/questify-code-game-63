@@ -1,3 +1,4 @@
+
 import { SkillTrack, Mission, Question, Profile } from "@/types";
 import { select, insert, update, remove } from "@/services/supabaseService";
 import { supabase } from "@/integrations/supabase/client";
@@ -164,7 +165,7 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
 export async function getUserStats() {
   // Count total users
   const { count: userCount, error: userError } = await supabase
-    .from("profiles")
+    .from("profiles" as any)
     .select("*", { count: 'exact', head: true });
 
   if (userError) {
@@ -176,7 +177,7 @@ export async function getUserStats() {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   const { count: activeUserCount, error: activeUserError } = await supabase
-    .from("profiles")
+    .from("profiles" as any)
     .select("*", { count: 'exact', head: true })
     .gt("last_activity", sevenDaysAgo.toISOString());
 
@@ -186,7 +187,7 @@ export async function getUserStats() {
 
   // Count completed missions
   const { count: completedMissionsCount, error: missionsError } = await supabase
-    .from("user_progress")
+    .from("user_progress" as any)
     .select("*", { count: 'exact', head: true })
     .eq("status", "completed");
 
@@ -204,7 +205,7 @@ export async function getUserStats() {
 export async function getMissionCompletionStats() {
   // Get a list of all missions with completion counts
   const { data, error } = await supabase
-    .from("missions")
+    .from("missions" as any)
     .select("id, name, xp_reward, user_progress(status)");
 
   if (error) {
