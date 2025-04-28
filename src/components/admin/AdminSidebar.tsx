@@ -33,7 +33,7 @@ const AdminSidebar = () => {
   return (
     <aside 
       className={cn(
-        "fixed left-0 top-0 z-40 h-full bg-sidebar border-r transition-all duration-300",
+        "h-full bg-sidebar border-r transition-all duration-300",
         collapsed ? "w-16" : "w-64"
       )}
     >
