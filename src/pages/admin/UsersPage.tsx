@@ -153,7 +153,7 @@ const UsersPage = () => {
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All statuses</SelectItem>
+            <SelectItem value="all-statuses">All statuses</SelectItem>
             <SelectItem value="active">Active</SelectItem>
             <SelectItem value="inactive">Inactive</SelectItem>
             <SelectItem value="suspended">Suspended</SelectItem>
