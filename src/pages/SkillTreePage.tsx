@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Code, Star, FileText, BarChart } from "lucide-react";
 import SkillTreeNode from "@/components/SkillTreeNode";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 // Type definitions for our skill tree
 type SkillNodeStatus = "locked" | "unlocked" | "completed";
@@ -141,9 +141,43 @@ const SkillTreePage = () => {
         </div>
       </div>
 
-      {/* Skill details panel */}
+      {/* Skills list view */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+        {skills.map(skill => (
+          <Card 
+            key={skill.id}
+            className={`transition-all hover:scale-105 cursor-pointer ${
+              skill.status === 'completed' ? 'border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : ''
+            }`}
+            onClick={() => handleNodeClick(skill)}
+          >
+            <CardHeader className="flex flex-row items-center gap-4 pb-2">
+              <div className={`p-2 rounded-lg ${
+                skill.status === 'completed' ? 'bg-blue-500' :
+                skill.status === 'unlocked' ? 'bg-primary' : 'bg-gray-300'
+              }`}>
+                {skill.icon}
+              </div>
+              <div>
+                <h3 className="text-lg font-vt323">{skill.name}</h3>
+                <p className={`text-sm ${
+                  skill.status === 'locked' ? 'text-muted-foreground' : ''
+                }`}>
+                  {skill.status === 'completed' ? '✓ Completed' :
+                   skill.status === 'unlocked' ? '🔓 Available' : '🔒 Locked'}
+                </p>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">{skill.description}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Selected skill details panel */}
       {selectedSkill && (
-        <Card className="p-6">
+        <Card className="p-6 mt-4">
           <h3 className="text-xl font-vt323 mb-2">{selectedSkill.name}</h3>
           <p className="text-muted-foreground mb-4">{selectedSkill.description}</p>
           
