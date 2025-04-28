@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -194,7 +193,7 @@ const QuestionBankPage = () => {
                     <SelectValue placeholder="Select mission" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Unassigned</SelectItem>
+                    <SelectItem value="unassigned">Unassigned</SelectItem>
                     {missions.map(mission => (
                       <SelectItem key={mission.id} value={mission.id.toString()}>
                         {mission.name}
@@ -235,7 +234,7 @@ const QuestionBankPage = () => {
                 <SelectValue placeholder="All difficulties" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All difficulties</SelectItem>
+                <SelectItem value="all-difficulties">All difficulties</SelectItem>
                 <SelectItem value="beginner">Beginner</SelectItem>
                 <SelectItem value="intermediate">Intermediate</SelectItem>
                 <SelectItem value="advanced">Advanced</SelectItem>
@@ -246,8 +245,8 @@ const QuestionBankPage = () => {
                 <SelectValue placeholder="All missions" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All missions</SelectItem>
-                <SelectItem value="null">Unassigned</SelectItem>
+                <SelectItem value="all-missions">All missions</SelectItem>
+                <SelectItem value="unassigned">Unassigned</SelectItem>
                 {missions.map(mission => (
                   <SelectItem key={mission.id} value={mission.id.toString()}>
                     {mission.name}
