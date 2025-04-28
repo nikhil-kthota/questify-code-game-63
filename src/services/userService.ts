@@ -1,11 +1,8 @@
-
-import { supabase } from "@/integrations/supabase/client";
 import { Profile, Badge, ActivityLog, UserBadge } from "@/types";
+import { select, insert, update } from "@/services/supabaseService";
 
 export async function fetchUserProfile(userId: string) {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
+  const { data, error } = await select<Profile>('profiles')
     .eq("id", userId)
     .single();
 
@@ -17,8 +14,7 @@ export async function fetchUserProfile(userId: string) {
 }
 
 export async function updateUserProfile(userId: string, profileData: Partial<Profile>) {
-  const { data, error } = await supabase
-    .from("profiles")
+  const { data, error } = await select<Profile>('profiles')
     .update(profileData)
     .eq("id", userId)
     .select();
@@ -32,9 +28,7 @@ export async function updateUserProfile(userId: string, profileData: Partial<Pro
 
 export async function addXpToUser(userId: string, xpAmount: number) {
   // First get current user profile
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("xp, level, daily_xp")
+  const { data: profile, error: profileError } = await select<Profile>('profiles')
     .eq("id", userId)
     .single();
 
@@ -56,16 +50,14 @@ export async function addXpToUser(userId: string, xpAmount: number) {
   const newLevel = newXp >= xpForNextLevel ? currentLevel + 1 : currentLevel;
 
   // Update user profile
-  const { data, error } = await supabase
-    .from("profiles")
-    .update({
-      xp: newXp,
-      daily_xp: newDailyXp,
-      level: newLevel,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", userId)
-    .select();
+  const { data, error } = await update<Profile>('profiles', {
+    xp: newXp,
+    daily_xp: newDailyXp,
+    level: newLevel,
+    updated_at: new Date().toISOString(),
+  })
+  .eq("id", userId)
+  .select();
 
   if (error) {
     throw new Error(error.message);
@@ -80,8 +72,7 @@ export async function addXpToUser(userId: string, xpAmount: number) {
 }
 
 export async function fetchUserBadges(userId: string) {
-  const { data, error } = await supabase
-    .from("user_badges")
+  const { data, error } = await select<UserBadge>('user_badges')
     .select("*, badge:badges(*)")
     .eq("user_id", userId);
 
@@ -93,9 +84,7 @@ export async function fetchUserBadges(userId: string) {
 }
 
 export async function fetchActivityLogs(userId: string, limit = 10) {
-  const { data, error } = await supabase
-    .from("activity_logs")
-    .select("*")
+  const { data, error } = await select<ActivityLog>('activity_logs')
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -113,15 +102,13 @@ export async function createActivityLog(
   detail: string,
   xpGained: number = 0
 ) {
-  const { error } = await supabase.from("activity_logs").insert([
-    {
-      user_id: userId,
-      action,
-      detail,
-      xp_gained: xpGained,
-      created_at: new Date().toISOString(),
-    },
-  ]);
+  const { error } = await insert('activity_logs', [{
+    user_id: userId,
+    action,
+    detail,
+    xp_gained: xpGained,
+    created_at: new Date().toISOString(),
+  }]);
 
   if (error) {
     throw new Error(error.message);
@@ -129,13 +116,11 @@ export async function createActivityLog(
 }
 
 export async function resetDailyXp(userId: string) {
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      daily_xp: 0,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", userId);
+  const { error } = await update('profiles', {
+    daily_xp: 0,
+    updated_at: new Date().toISOString(),
+  })
+  .eq("id", userId);
 
   if (error) {
     throw new Error(error.message);
@@ -144,8 +129,7 @@ export async function resetDailyXp(userId: string) {
 
 export async function updateDailyStreak(userId: string) {
   // Get current user profile
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
+  const { data: profile, error: profileError } = await select<Profile>('profiles')
     .select("streak_days, last_activity")
     .eq("id", userId)
     .single();
@@ -174,14 +158,12 @@ export async function updateDailyStreak(userId: string) {
   }
 
   // Update streak and last activity
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      streak_days: newStreakDays,
-      last_activity: currentDate.toISOString(),
-      updated_at: currentDate.toISOString(),
-    })
-    .eq("id", userId);
+  const { error } = await update('profiles', {
+    streak_days: newStreakDays,
+    last_activity: currentDate.toISOString(),
+    updated_at: currentDate.toISOString(),
+  })
+  .eq("id", userId);
 
   if (error) {
     throw new Error(error.message);
@@ -195,8 +177,7 @@ export async function checkAndAwardBadges(userId: string) {
   // For now, we'll just check for streak badges
   
   // Get user profile
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
+  const { data: profile, error: profileError } = await select<Profile>('profiles')
     .select("streak_days, xp")
     .eq("id", userId)
     .single();
@@ -209,8 +190,7 @@ export async function checkAndAwardBadges(userId: string) {
   const xp = profile.xp || 0;
   
   // Check for eligible badges
-  const { data: eligibleBadges, error: badgesError } = await supabase
-    .from("badges")
+  const { data: eligibleBadges, error: badgesError } = await select<Badge>('badges')
     .select("*")
     .or(`required_xp.lte.${xp},and(required_xp.is.null)`);
 
@@ -219,8 +199,7 @@ export async function checkAndAwardBadges(userId: string) {
   }
 
   // Get user's existing badges
-  const { data: userBadges, error: userBadgesError } = await supabase
-    .from("user_badges")
+  const { data: userBadges, error: userBadgesError } = await select<UserBadge>('user_badges')
     .select("badge_id")
     .eq("user_id", userId);
 
@@ -235,13 +214,11 @@ export async function checkAndAwardBadges(userId: string) {
   
   // Award new badges
   for (const badge of newBadges) {
-    await supabase.from("user_badges").insert([
-      {
-        user_id: userId,
-        badge_id: badge.id,
-        earned_at: new Date().toISOString(),
-      }
-    ]);
+    await insert('user_badges', [{
+      user_id: userId,
+      badge_id: badge.id,
+      earned_at: new Date().toISOString(),
+    }]);
 
     // Create activity log for the new badge
     await createActivityLog(userId, "earned_badge", badge.name, 0);

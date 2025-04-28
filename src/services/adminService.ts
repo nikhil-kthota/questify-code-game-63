@@ -1,13 +1,11 @@
-
-import { supabase } from "@/integrations/supabase/client";
 import { SkillTrack, Mission, Question, Profile } from "@/types";
+import { select, insert, update, remove } from "@/services/supabaseService";
+import { supabase } from "@/integrations/supabase/client";
 
 // Skill Tracks Management
 export async function fetchAllSkillTracks() {
-  const { data, error } = await supabase
-    .from("skill_tracks")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const { data, error } = await select<SkillTrack>('skill_tracks')
+    .order('created_at', { ascending: false });
 
   if (error) {
     throw new Error(error.message);
@@ -17,9 +15,7 @@ export async function fetchAllSkillTracks() {
 }
 
 export async function createSkillTrack(trackData: Partial<SkillTrack>) {
-  const { data, error } = await supabase
-    .from("skill_tracks")
-    .insert([trackData])
+  const { data, error } = await insert<SkillTrack>('skill_tracks', [trackData])
     .select();
 
   if (error) {
@@ -30,10 +26,8 @@ export async function createSkillTrack(trackData: Partial<SkillTrack>) {
 }
 
 export async function updateSkillTrack(trackId: string, trackData: Partial<SkillTrack>) {
-  const { data, error } = await supabase
-    .from("skill_tracks")
-    .update(trackData)
-    .eq("id", trackId)
+  const { data, error } = await update<SkillTrack>('skill_tracks', trackData)
+    .eq('id', trackId)
     .select();
 
   if (error) {
@@ -44,10 +38,8 @@ export async function updateSkillTrack(trackId: string, trackData: Partial<Skill
 }
 
 export async function deleteSkillTrack(trackId: string) {
-  const { error } = await supabase
-    .from("skill_tracks")
-    .delete()
-    .eq("id", trackId);
+  const { error } = await remove('skill_tracks')
+    .eq('id', trackId);
 
   if (error) {
     throw new Error(error.message);
@@ -56,10 +48,9 @@ export async function deleteSkillTrack(trackId: string) {
 
 // Missions Management
 export async function fetchAllMissions() {
-  const { data, error } = await supabase
-    .from("missions")
-    .select("*, skill_tracks(name)")
-    .order("created_at", { ascending: false });
+  const { data, error } = await select<Mission>('missions')
+    .select('*, skill_tracks(name)')
+    .order('created_at', { ascending: false });
 
   if (error) {
     throw new Error(error.message);
@@ -69,9 +60,7 @@ export async function fetchAllMissions() {
 }
 
 export async function createMission(missionData: Partial<Mission>) {
-  const { data, error } = await supabase
-    .from("missions")
-    .insert([missionData])
+  const { data, error } = await insert<Mission>('missions', [missionData])
     .select();
 
   if (error) {
@@ -82,10 +71,8 @@ export async function createMission(missionData: Partial<Mission>) {
 }
 
 export async function updateMission(missionId: string, missionData: Partial<Mission>) {
-  const { data, error } = await supabase
-    .from("missions")
-    .update(missionData)
-    .eq("id", missionId)
+  const { data, error } = await update<Mission>('missions', missionData)
+    .eq('id', missionId)
     .select();
 
   if (error) {
@@ -96,10 +83,8 @@ export async function updateMission(missionId: string, missionData: Partial<Miss
 }
 
 export async function deleteMission(missionId: string) {
-  const { error } = await supabase
-    .from("missions")
-    .delete()
-    .eq("id", missionId);
+  const { error } = await remove('missions')
+    .eq('id', missionId);
 
   if (error) {
     throw new Error(error.message);
@@ -108,11 +93,9 @@ export async function deleteMission(missionId: string) {
 
 // Questions Management
 export async function fetchQuestionsByMission(missionId: string) {
-  const { data, error } = await supabase
-    .from("questions")
-    .select("*")
-    .eq("mission_id", missionId)
-    .order("created_at", { ascending: true });
+  const { data, error } = await select<Question>('questions')
+    .eq('mission_id', missionId)
+    .order('created_at', { ascending: true });
 
   if (error) {
     throw new Error(error.message);
@@ -122,9 +105,7 @@ export async function fetchQuestionsByMission(missionId: string) {
 }
 
 export async function createQuestion(questionData: Partial<Question>) {
-  const { data, error } = await supabase
-    .from("questions")
-    .insert([questionData])
+  const { data, error } = await insert<Question>('questions', [questionData])
     .select();
 
   if (error) {
@@ -135,10 +116,8 @@ export async function createQuestion(questionData: Partial<Question>) {
 }
 
 export async function updateQuestion(questionId: string, questionData: Partial<Question>) {
-  const { data, error } = await supabase
-    .from("questions")
-    .update(questionData)
-    .eq("id", questionId)
+  const { data, error } = await update<Question>('questions', questionData)
+    .eq('id', questionId)
     .select();
 
   if (error) {
@@ -149,10 +128,8 @@ export async function updateQuestion(questionId: string, questionData: Partial<Q
 }
 
 export async function deleteQuestion(questionId: string) {
-  const { error } = await supabase
-    .from("questions")
-    .delete()
-    .eq("id", questionId);
+  const { error } = await remove('questions')
+    .eq('id', questionId);
 
   if (error) {
     throw new Error(error.message);
@@ -161,10 +138,8 @@ export async function deleteQuestion(questionId: string) {
 
 // User Management
 export async function fetchAllUsers() {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const { data, error } = await select<Profile>('profiles')
+    .order('created_at', { ascending: false });
 
   if (error) {
     throw new Error(error.message);
@@ -174,10 +149,8 @@ export async function fetchAllUsers() {
 }
 
 export async function updateUserRole(userId: string, role: 'user' | 'admin') {
-  const { data, error } = await supabase
-    .from("profiles")
-    .update({ role })
-    .eq("id", userId)
+  const { data, error } = await update<Profile>('profiles', { role })
+    .eq('id', userId)
     .select();
 
   if (error) {
@@ -279,5 +252,3 @@ export async function uploadFile(file: File, bucket: string = 'questify-assets',
 
   return publicUrl;
 }
-
-// Learning Content Management is already handled in the component

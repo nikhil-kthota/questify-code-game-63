@@ -1,13 +1,12 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { LearningContent, SkillTrack } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Video, FileText, ExternalLink, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { select } from "@/services/supabaseService";
 
 const LearnPage = () => {
   const { toast } = useToast();
@@ -17,9 +16,7 @@ const LearnPage = () => {
   const { data: skillTracks, isLoading: loadingTracks } = useQuery({
     queryKey: ['skill-tracks'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('skill_tracks')
-        .select('*')
+      const { data, error } = await select<SkillTrack>('skill_tracks')
         .eq('active', true);
       
       if (error) {
@@ -39,9 +36,7 @@ const LearnPage = () => {
   const { data: learningContent, isLoading: loadingContent } = useQuery({
     queryKey: ['learning-content', selectedTrack],
     queryFn: async () => {
-      const query = supabase
-        .from('learning_content')
-        .select('*');
+      const query = select<LearningContent>('learning_content');
       
       if (selectedTrack) {
         query.eq('track_id', selectedTrack);
