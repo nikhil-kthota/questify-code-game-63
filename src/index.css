@@ -104,7 +104,7 @@
 
 @layer components {
   .game-panel {
-    @apply bg-mountain-dark/90 backdrop-blur-md border border-mountain-purple/30 rounded-xl shadow-lg shadow-mountain-purple/10;
+    @apply bg-mountain-dark border border-mountain-purple/30 rounded-xl shadow-lg shadow-mountain-purple/10 backdrop-blur-md;
   }
   
   .neon-glow {
@@ -132,7 +132,7 @@
   }
   
   .glass-card {
-    @apply bg-mountain-dark/70 backdrop-blur-lg border border-mountain-purple/30 rounded-xl shadow-lg;
+    @apply bg-mountain-dark border border-mountain-purple/30 rounded-xl shadow-lg backdrop-blur-lg;
   }
 
   .questify-button {
