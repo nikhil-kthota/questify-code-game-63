@@ -1,9 +1,11 @@
 
+import { supabase } from "@/integrations/supabase/client";
 import { Mission, SkillTrack, UserProgress, MissionStatus } from "@/types";
-import { select, insert, update } from "@/services/supabaseService";
 
 export async function fetchSkillTracks() {
-  const { data, error } = await select<SkillTrack>('skill_tracks')
+  const { data, error } = await supabase
+    .from("skill_tracks")
+    .select("*")
     .eq("active", true);
 
   if (error) {
@@ -14,7 +16,9 @@ export async function fetchSkillTracks() {
 }
 
 export async function fetchMissionsByTrack(trackId: string) {
-  const { data, error } = await select<Mission>('missions')
+  const { data, error } = await supabase
+    .from("missions")
+    .select("*")
     .eq("track_id", trackId)
     .eq("published", true);
 
@@ -26,7 +30,9 @@ export async function fetchMissionsByTrack(trackId: string) {
 }
 
 export async function fetchUserProgress(userId: string) {
-  const { data, error } = await select<UserProgress>('user_progress')
+  const { data, error } = await supabase
+    .from("user_progress")
+    .select("*")
     .eq("user_id", userId);
 
   if (error) {
@@ -51,7 +57,9 @@ export async function updateUserProgress(
   };
 
   // Check if progress entry exists
-  const { data: existingProgress, error: checkError } = await select<UserProgress>('user_progress')
+  const { data: existingProgress, error: checkError } = await supabase
+    .from("user_progress")
+    .select("id")
     .eq("user_id", userId)
     .eq("mission_id", missionId)
     .maybeSingle();
@@ -64,12 +72,16 @@ export async function updateUserProgress(
 
   if (existingProgress) {
     // Update existing progress
-    result = await update<UserProgress>('user_progress', progressData)
+    result = await supabase
+      .from("user_progress")
+      .update(progressData)
       .eq("id", existingProgress.id)
       .select();
   } else {
     // Create new progress entry
-    result = await insert<UserProgress>('user_progress', [progressData])
+    result = await supabase
+      .from("user_progress")
+      .insert([progressData])
       .select();
   }
 
@@ -81,7 +93,9 @@ export async function updateUserProgress(
 }
 
 export async function getMissionProgressStatus(userId: string, missionId: string): Promise<MissionStatus> {
-  const { data, error } = await select<UserProgress>('user_progress')
+  const { data, error } = await supabase
+    .from("user_progress")
+    .select("status")
     .eq("user_id", userId)
     .eq("mission_id", missionId)
     .maybeSingle();

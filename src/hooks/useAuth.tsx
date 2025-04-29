@@ -1,10 +1,10 @@
+
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types';
-import { select, update } from '@/services/supabaseService';
 
 interface AuthContextType {
   user: User | null;
@@ -29,12 +29,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          // Defer fetching user profile to prevent Supabase deadlocks
           if (currentSession?.user) {
             setTimeout(() => {
               fetchProfile(currentSession.user.id);
@@ -46,6 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
+    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
@@ -65,7 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchProfile = async (userId: string) => {
     try {
       setLoadingProfile(true);
-      const { data, error } = await select<Profile>('profiles')
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
         .eq('id', userId)
         .single();
 
@@ -133,6 +138,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: 'Welcome to Questify! Check your email to confirm your account.',
       });
       
+      // Note: Not navigating here as the user needs to confirm their email first
     } catch (error: any) {
       toast({
         title: 'Registration failed',
@@ -166,13 +172,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     try {
       setLoadingProfile(true);
-      const { error } = await update<Profile>('profiles', profileData)
+      const { error } = await supabase
+        .from('profiles')
+        .update(profileData)
         .eq('id', user.id);
 
       if (error) {
         throw error;
       }
 
+      // Update local profile state
       setProfile(prev => prev ? { ...prev, ...profileData } : null);
       
       toast({

@@ -1,5 +1,7 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { LearningContent, SkillTrack } from "@/types";
 import {
   Card,
@@ -32,13 +34,6 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Edit, Trash, Video, FileText, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { select, insert, update, remove } from "@/services/supabaseService";
-
-interface ExtendedLearningContent extends LearningContent {
-  skill_tracks?: {
-    name: string;
-  };
-}
 
 const LearningContentPage = () => {
   const { toast } = useToast();
@@ -58,7 +53,8 @@ const LearningContentPage = () => {
   const { data: learningContent, isLoading: loadingContent } = useQuery({
     queryKey: ['admin-learning-content'],
     queryFn: async () => {
-      const { data, error } = await select<ExtendedLearningContent>('learning_content')
+      const { data, error } = await supabase
+        .from('learning_content')
         .select('*, skill_tracks(name)');
       
       if (error) {
@@ -70,7 +66,7 @@ const LearningContentPage = () => {
         throw error;
       }
       
-      return data as ExtendedLearningContent[];
+      return data as (LearningContent & { skill_tracks: { name: string } })[];
     },
   });
 
@@ -78,7 +74,9 @@ const LearningContentPage = () => {
   const { data: skillTracks, isLoading: loadingTracks } = useQuery({
     queryKey: ['admin-skill-tracks'],
     queryFn: async () => {
-      const { data, error } = await select<SkillTrack>('skill_tracks');
+      const { data, error } = await supabase
+        .from('skill_tracks')
+        .select('*');
       
       if (error) {
         toast({
@@ -100,12 +98,16 @@ const LearningContentPage = () => {
       
       if (currentContent) {
         // Update
-        response = await update<LearningContent>('learning_content', data)
+        response = await supabase
+          .from('learning_content')
+          .update(data)
           .eq('id', currentContent.id)
           .select();
       } else {
         // Create
-        response = await insert<LearningContent>('learning_content', [data])
+        response = await supabase
+          .from('learning_content')
+          .insert([data])
           .select();
       }
       
@@ -135,7 +137,9 @@ const LearningContentPage = () => {
   // Delete learning content
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await remove('learning_content')
+      const { error } = await supabase
+        .from('learning_content')
+        .delete()
         .eq('id', id);
       
       if (error) throw error;
