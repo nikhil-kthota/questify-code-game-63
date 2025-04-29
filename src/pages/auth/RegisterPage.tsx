@@ -1,51 +1,62 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
 
 const RegisterPage = () => {
-  const { signUp, loading } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-    // Clear error when user types
-    if (error) setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    // Simple validation
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-    
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
-
-    if (formData.username.length < 3) {
-      setError("Username must be at least 3 characters");
-      return;
-    }
-    
-    await signUp(formData.email, formData.password, formData.username);
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      
+      // Simple validation
+      if (formData.password !== formData.confirmPassword) {
+        toast({
+          title: "Passwords do not match",
+          description: "Please ensure both passwords match",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (formData.name && formData.email && formData.password) {
+        // In a real app, this would register the user with a backend
+        navigate("/");
+        toast({
+          title: "Registration successful",
+          description: "Welcome to Questify! Start your learning journey now.",
+        });
+      } else {
+        toast({
+          title: "Registration failed",
+          description: "Please fill out all fields and try again.",
+          variant: "destructive",
+        });
+      }
+    }, 1000);
   };
 
   return (
@@ -56,23 +67,16 @@ const RegisterPage = () => {
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="p-3 bg-sunset-red/20 border border-sunset-red/50 rounded-md text-sm text-sunset-red">
-            {error}
-          </div>
-        )}
-        
         <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
+          <Label htmlFor="name">Full Name</Label>
           <Input
-            id="username"
-            name="username"
+            id="name"
+            name="name"
             type="text"
-            placeholder="Choose a username"
-            value={formData.username}
+            placeholder="Enter your full name"
+            value={formData.name}
             onChange={handleChange}
             required
-            className="transition-all focus:ring-2 focus:ring-mountain-purple hover:border-mountain-purple"
           />
         </div>
         
@@ -86,7 +90,6 @@ const RegisterPage = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="transition-all focus:ring-2 focus:ring-mountain-purple hover:border-mountain-purple"
           />
         </div>
         
@@ -100,7 +103,6 @@ const RegisterPage = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            className="transition-all focus:ring-2 focus:ring-mountain-purple hover:border-mountain-purple"
           />
         </div>
         
@@ -114,25 +116,16 @@ const RegisterPage = () => {
             value={formData.confirmPassword}
             onChange={handleChange}
             required
-            className="transition-all focus:ring-2 focus:ring-mountain-purple hover:border-mountain-purple"
           />
         </div>
 
-        <Button type="submit" className="w-full questify-button-primary relative hover:scale-[1.03] transition-all" disabled={loading}>
-          {loading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              <span>Registering...</span>
-            </>
-          ) : (
-            "Create Account"
-          )}
-          <div className="absolute inset-0 bg-gradient-to-r from-mountain-purple/20 to-sunset-pink/20 rounded-md filter blur-sm -z-10"></div>
+        <Button type="submit" className="w-full questify-button-primary" disabled={isLoading}>
+          {isLoading ? "Registering..." : "Create Account"}
         </Button>
         
         <div className="text-center text-sm">
           <span className="text-muted-foreground">Already have an account? </span>
-          <Link to="/login" className="text-primary hover:underline hover:text-primary/80 transition-all">
+          <Link to="/login" className="text-primary hover:underline">
             Log in
           </Link>
         </div>

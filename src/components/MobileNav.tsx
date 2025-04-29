@@ -9,8 +9,8 @@ const MobileNav = () => {
   const navItems = [
     { icon: Home, label: "Realm", path: "/" },
     { icon: BookOpen, label: "Spell Paths", path: "/skill-tree" },
-    { icon: Sparkles, label: "Level Up", path: "/learn" },
-    { icon: Trophy, label: "Wizard Hall", path: "/leaderboard" },
+    { icon: Sparkles, label: "Quests", path: "/mission/current" },
+    { icon: Trophy, label: "Wizards Hall", path: "/leaderboard" },
     { icon: User, label: "Grimoire", path: "/profile" },
   ];
 
@@ -25,16 +25,13 @@ const MobileNav = () => {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-all duration-300",
+                "flex flex-col items-center justify-center py-1 px-3 rounded-lg",
                 isActive
                   ? "text-sunset-pink"
                   : "text-white/60 hover:text-white"
               )}
             >
-              <item.icon className={cn(
-                "h-5 w-5 transition-all duration-300", 
-                isActive ? "neon-glow-red" : "hover:scale-125"
-              )} />
+              <item.icon className={cn("h-5 w-5", isActive && "neon-glow-red")} />
               <span className="text-xs mt-1">{item.label}</span>
             </Link>
           );

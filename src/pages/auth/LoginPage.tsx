@@ -1,14 +1,15 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
 
 const LoginPage = () => {
-  const { signIn, loading } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,7 +24,36 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signIn(formData.email, formData.password);
+    setIsLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      
+      // Simple validation
+      if (formData.email && formData.password) {
+        // In a real app, this would check credentials against a backend
+        
+        // For demo, we'll allow admin login to access admin pages
+        if (formData.email === "admin@questify.com" && formData.password === "admin") {
+          navigate("/admin");
+        } else {
+          // Regular user login
+          navigate("/");
+        }
+        
+        toast({
+          title: "Logged in successfully",
+          description: "Welcome back to Questify!",
+        });
+      } else {
+        toast({
+          title: "Login failed",
+          description: "Please check your credentials and try again.",
+          variant: "destructive",
+        });
+      }
+    }, 1000);
   };
 
   return (
@@ -44,7 +74,6 @@ const LoginPage = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="transition-all focus:ring-2 focus:ring-mountain-purple hover:border-mountain-purple"
           />
         </div>
         
@@ -63,29 +92,26 @@ const LoginPage = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            className="transition-all focus:ring-2 focus:ring-mountain-purple hover:border-mountain-purple"
           />
         </div>
 
-        <Button type="submit" className="w-full questify-button-primary relative hover:scale-[1.03] transition-all" disabled={loading}>
-          {loading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              <span>Logging in...</span>
-            </>
-          ) : (
-            "Login"
-          )}
-          <div className="absolute inset-0 bg-gradient-to-r from-mountain-purple/20 to-sunset-pink/20 rounded-md filter blur-sm -z-10"></div>
+        <Button type="submit" className="w-full questify-button-primary" disabled={isLoading}>
+          {isLoading ? "Logging in..." : "Login"}
         </Button>
         
         <div className="text-center text-sm">
           <span className="text-muted-foreground">Don't have an account? </span>
-          <Link to="/register" className="text-primary hover:underline hover:text-primary/80 transition-all">
+          <Link to="/register" className="text-primary hover:underline">
             Sign up
           </Link>
         </div>
       </form>
+      
+      <div className="text-xs text-center text-muted-foreground">
+        <p>Demo credentials:</p>
+        <p>User: user@questify.com / password</p>
+        <p>Admin: admin@questify.com / admin</p>
+      </div>
     </div>
   );
 };
